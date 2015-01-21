@@ -8,7 +8,7 @@ client = ImgurClient(client_id, client_secret)
 
 # Example request
 items = client.gallery()
-with open('imagelist.txt', 'wb') as out_fd:
+with open('imagelist.txt', 'ab') as out_fd:
     for item in items:
        out_fd.write(item.link + '\n')
 

@@ -12,3 +12,7 @@ with open('imagelist.txt', 'ab') as out_fd:
     for item in items:
        out_fd.write(item.link + '\n')
 
+print items[0].link.split('/')
+
+print client.get_image(items[1].link.split('/')[-1])
+

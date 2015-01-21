@@ -1,0 +1,21 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/anand/.nvm/v0.11.14/bin/node',
+1 verbose cli   '/home/anand/.nvm/v0.11.14/bin/npm',
+1 verbose cli   'i' ]
+2 info using npm@2.0.0
+3 info using node@v0.11.14
+4 error install Couldn't read dependencies
+5 verbose stack Error: ENOENT, open '/home/anand/workspace/emofeedback/porndetect/pornOrNot/package.json'
+5 verbose stack     at Error (native)
+6 verbose cwd /home/anand/workspace/emofeedback/porndetect/pornOrNot
+7 error Linux 3.17.0-031700rc7-lowlatency
+8 error argv "/home/anand/.nvm/v0.11.14/bin/node" "/home/anand/.nvm/v0.11.14/bin/npm" "i"
+9 error node v0.11.14
+10 error npm  v2.0.0
+11 error path /home/anand/workspace/emofeedback/porndetect/pornOrNot/package.json
+12 error code ENOPACKAGEJSON
+13 error errno -2
+14 error package.json ENOENT, open '/home/anand/workspace/emofeedback/porndetect/pornOrNot/package.json'
+14 error package.json This is most likely not a problem with npm itself.
+14 error package.json npm can't find a package.json file in your current directory.
+15 verbose exit [ -2, true ]

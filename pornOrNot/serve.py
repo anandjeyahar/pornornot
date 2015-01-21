@@ -16,8 +16,8 @@ F_TITS_SET = 'porn:f:tits'
 S_BOOBS_SET = 'porn:s:boobs'
 P_SET = 'porn:pussy'
 D_SET = 'porn:dick'
-B_SET = 'porn:butts'
-
+A_SET = 'porn:butts'
+NP_SET = 'porn:not'
 logger = logging.getLogger(__name__)
 
 define('debug', default=1, help='hot deployment. use in dev only', type=int)
@@ -31,14 +31,24 @@ def getImageFromImgur(url):
     # get image from imgur
     #
     imgId = url.split('/')[-1]
-    imgurClient.get_image(imgId)
+    image = imgurClient.get_image(imgId)
     return imgHash
 
 def processImgData(imgData):
     imgHash = getImageFromImgur(imgData.get('imgUrl'))
 
     if imgData.get('pornCategory') is None:
-
+        backend.redisToGoConn.sadd(NP_SET, imgHash)
+    elif imgData.get('pornCategory') == 'pussy':
+        backend.redisToGoConn.sadd(P_SET, imgHash)
+    elif imgData.get('pornCategory') == 'ass':
+        backend.redisToGoConn.sadd(A_SET, imgHash)
+    elif imgData.get('pornCategory') == 'dick':
+        backend.redisToGoConn.sadd(D_SET, imgHash)
+    elif imgData.get('pornCategory') == 'sideTits':
+        backend.redisToGoConn.sadd(S_BOOBS_SET, imgHash)
+    elif imgData.get('pornCategory') == 'frontalTits':
+        backend.redisToGoConn.sadd(F_TITS_SET, imgHash)
 
 class PornOrNotRenderer(RequestHandler):
     def get(self):

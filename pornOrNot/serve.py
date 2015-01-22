@@ -1,16 +1,18 @@
+import greenlet
+import json
 import logging
+from functools import partial
+import os
+import random
+import sys
 import tornado
 import tornado.httpserver
 from tornado.options import define, options
 from tornado.web import RequestHandler, Application
-from functools import partial
-import random
-import sys
+
 sys.path.append('/home/anand/Downloads/devbox_configs/')
-import backend
-import os
-import json
 from fetchImgur import client as imgurClient
+import backend
 
 PORNDETECT_PREFIX = 'porn:or:not:'
 F_TITS_SET = 'porn:f:tits'
@@ -31,25 +33,26 @@ def getRandomImgUrUrl():
 def getImageFromImgur(url):
     # get image from imgur
     #
-    imgId = url[0].split('/')[-1]
     image = imgurClient.get_image(imgId)
-    return imgHash
+    return imgId
 
 def processImgData(imgData):
-    imgHash = getImageFromImgur(imgData.get('imgUrl'))
+
+    imgId = imgData.get('imgUrl')[0].split('/')[-1]
+    #g = greenlet(getImageFromImgurl)
 
     if imgData.get('pornCategory') is None:
-        backend.redisToGoConn.sadd(NP_SET, imgHash)
+        backend.redisToGoConn.sadd(NP_SET, imgId)
     elif imgData.get('pornCategory') == 'pussy':
-        backend.redisToGoConn.sadd(P_SET, imgHash)
+        backend.redisToGoConn.sadd(P_SET, imgId)
     elif imgData.get('pornCategory') == 'ass':
-        backend.redisToGoConn.sadd(A_SET, imgHash)
+        backend.redisToGoConn.sadd(A_SET, imgId)
     elif imgData.get('pornCategory') == 'dick':
-        backend.redisToGoConn.sadd(D_SET, imgHash)
+        backend.redisToGoConn.sadd(D_SET, imgId)
     elif imgData.get('pornCategory') == 'sideTits':
-        backend.redisToGoConn.sadd(S_BOOBS_SET, imgHash)
+        backend.redisToGoConn.sadd(S_BOOBS_SET, imgId)
     elif imgData.get('pornCategory') == 'frontalTits':
-        backend.redisToGoConn.sadd(F_TITS_SET, imgHash)
+        backend.redisToGoConn.sadd(F_TITS_SET, imgId)
 
 class PornOrNotRenderer(RequestHandler):
     def get(self):

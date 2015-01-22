@@ -10,6 +10,7 @@ sys.path.append('/home/anand/Downloads/devbox_configs/')
 import backend
 import os
 import json
+from fetchImgur import client as imgurClient
 
 PORNDETECT_PREFIX = 'porn:or:not:'
 F_TITS_SET = 'porn:f:tits'
@@ -30,7 +31,7 @@ def getRandomImgUrUrl():
 def getImageFromImgur(url):
     # get image from imgur
     #
-    imgId = url.split('/')[-1]
+    imgId = url[0].split('/')[-1]
     image = imgurClient.get_image(imgId)
     return imgHash
 

@@ -1,3 +1,4 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
@@ -25,7 +26,7 @@ function scaleSize(maxW, maxH, currW, currH){
       if(currW >= maxW){
             currW = maxW;
             currH = currW * ratio;
-      } else >if(currH >= maxH){
+      } else if(currH >= maxH){
             currH = maxH;
             currW = currH / ratio;
       }
@@ -34,8 +35,7 @@ function scaleSize(maxW, maxH, currW, currH){
     var maxH = 300;
     var maxW = 300;
     var img = document.getElementById('Image');
-    newDims = scaleSize(maxW, maxH, img.width, img.height);
-    alert(newDims);
+    newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
     img.width = newDims[0];
     img.height = newDims[1];
 </script>

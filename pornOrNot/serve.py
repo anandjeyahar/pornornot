@@ -11,7 +11,7 @@ from tornado.options import define, options
 from tornado.web import RequestHandler, Application
 
 sys.path.append('/home/anand/Downloads/devbox_configs/')
-from fetchImgur import client as imgurClient
+#from fetchImgur import client as imgurClient
 import backend
 
 PORNDETECT_PREFIX = 'porn:or:not:'
@@ -30,11 +30,11 @@ define('imgFolder', default='images', help = 'folder to store uploaded images', 
 def getRandomImgUrUrl():
     yield random.choice(open('imagelist.txt', 'r').readlines())
 
-def getImageFromImgur(url):
-    # get image from imgur
-    #
-    image = imgurClient.get_image(imgId)
-    return imgId
+# def getImageFromImgur(url):
+#     # get image from imgur
+#     #
+#     image = imgurClient.get_image(imgId)
+#     return imgId
 
 def processImgData(imgData):
 

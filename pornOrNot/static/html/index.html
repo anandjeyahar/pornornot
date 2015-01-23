@@ -8,7 +8,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <form action ="/pollpost" method="post">
-    <img src="{{imgurUrl}}" >
+    <img src="{{imgurUrl}}" class="Image" id="Image">
     <input type=hidden readonly=true value="{{imgurUrl}}" name="imgUrl"> <br>
     <input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br>
     <input type=radio name="pornCategory"value="sideTits">Side Boob <br>
@@ -18,3 +18,26 @@
     <input type=radio name="pornCategory"value="None">None of the above <br>
     <input type="submit" value="Classify">
 </form>
+
+<script type="text/javascript" >
+function scaleSize(maxW, maxH, currW, currH){
+      var ratio = currH / currW;
+      if(currW >= maxW){
+            currW = maxW;
+            currH = currW * ratio;
+      } else >if(currH >= maxH){
+            currH = maxH;
+            currW = currH / ratio;
+      }
+      return [currW, currH];
+    }
+    var maxH = 300;
+    var maxW = 300;
+    var img = document.getElementById('Image');
+    newDims = scaleSize(maxW, maxH, img.width, img.height);
+    alert(newDims);
+    img.width = newDims[0];
+    img.height = newDims[1];
+</script>
+
+

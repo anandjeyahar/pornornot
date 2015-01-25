@@ -21,6 +21,19 @@
 </form>
 
 <script type="text/javascript" >
+
+function screenSize(){
+    // assumes whatever size the browser  is open when the function is called.
+    var h = window.screen.availHeight;
+    var w = window.screen.availWidth;
+    return [h, w];
+}
+
+function getScreenAspie(){
+    var dim = screenSize();
+    return dim[0]/dim[1];
+}
+
 function scaleSize(maxW, maxH, currW, currH){
       var ratio = currH / currW;
       if(currW >= maxW){
@@ -32,12 +45,18 @@ function scaleSize(maxW, maxH, currW, currH){
       }
       return [currW, currH];
     }
-    var maxH = 300;
-    var maxW = 300;
-    var img = document.getElementById('Image');
-    newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
-    img.width = newDims[0];
-    img.height = newDims[1];
+    window.onload = function() {
+        var scrAspectRatio = getScreenAspie();
+        var scrDims = screenSize();
+        var maxH = 0.5 * scrDims[0];
+        var maxW = 0.5 * scrDims[1];
+        var img = document.getElementById('Image');
+        newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
+        img.width = newDims[0];
+        img.height = newDims[1];
+
+
+    }
 </script>
 
 

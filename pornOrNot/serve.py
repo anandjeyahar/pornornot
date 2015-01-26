@@ -69,6 +69,7 @@ class Application(Application):
         handlers = [
                 (r'/', PornOrNotRenderer),
                 (r'/pollpost', PollPostHandler),
+                (r'render', RenderHandler),
                 ]
         settings = dict(
             autoescape=None,  # tornado 2.1 backward compatibility
@@ -78,7 +79,7 @@ class Application(Application):
 
             )
         settings.update({'static_path':os.path.join(os.path.dirname(__file__), 'static')})
-        settings.update({'template_path': os.path.join(os.path.dirname(__file__), 'static', 'html')})
+        settings.update({'template_path': os.path.join(os.path.dirname(__file__), 'static', )})
         tornado.web.Application.__init__(self, handlers, **settings)
         if not os.path.exists(os.path.join(os.path.dirname(__file__), 'static', options.imgFolder)):
             os.makedirs(os.path.join(os.path.dirname(__file__), 'static', options.imgFolder))

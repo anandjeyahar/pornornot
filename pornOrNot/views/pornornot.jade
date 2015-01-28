@@ -15,16 +15,16 @@ html
                 return dim[0]/dim[1];
             }
 
-            function scaleSize(maxW, maxH, currW, currH){
+            function scaleSize(maxW, maxH, natW, natH){
                   var ratio = currH / currW;
                   if(currW >= maxW){
-                        currW = maxW;
-                        currH = currW * ratio;
+                        natW = maxW;
+                        natH = currW * ratio;
                   } else if(currH >= maxH){
-                        currH = maxH;
-                        currW = currH / ratio;
+                        natH = maxH;
+                        natW = currH / ratio;
                   }
-                  return [currW, currH];
+                  return [natW, natH];
                 }
 
             function getRequest(url, cb) {
@@ -43,18 +43,20 @@ html
                 var response;
                 getRequest(url, function(res) {
                     response = this.responseText;
-                });
-                var params = JSON.parse(response);
-                var divElem =  document.getElementById('appDiv');
-                var html = '<form action ="/pollpost" method="post">';
-                html += '<img src=' + params.imgurUrl  + ' class="Image" id="Image">';
-                html += '<input type=hidden readonly=true value=' + params.imgurUrl + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
+                    var params = response;
+                    var divElem =  document.getElementById('appDiv');
+                    var html = '<form action ="/pollpost" method="post">';
+                    html += '<img src=' + params  + ' class="Image" id="Image">';
+                    html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
 
-                divElem.innerHTML = html;
-                var img = document.getElementById('Image');
-                newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
-                img.width = newDims[0];
-                img.height = newDims[1];
+                    divElem.innerHTML = html;
+                    var img = document.getElementById('Image');
+                    img.onload = function () {
+                        newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
+                        img.width = newDims[0];
+                        img.height = newDims[1];
+                        }
+                });
             };
 
 

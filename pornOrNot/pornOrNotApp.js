@@ -8,6 +8,7 @@ var settings = {'redis': {'port':9383,
 var express = require('express'),
     mustache = require('mustache'),
     redis = require('redis'),
+    fs = require('fs'),
     client = redis.createClient(settings.redis.port,
                                 settings.redis.host,
                                 {no_ready_check: true}),
@@ -75,7 +76,13 @@ var processImgData = function(imgArgs) {
         }
 }
 
-var nextImgurLink = function () {
+var imgurLinks = function () {
+    return fs.readFileSync('./imagelist.txt', 'utf8').split('\n').slice(0, -1);
+}
+
+var nextImgurLink = function() {
+    allLinks = imgurLinks();
+    return allLinks[Math.floor(Math.random() * allLinks.length)];
 }
 
 app.get('/', function (req, res) {
@@ -83,7 +90,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/next', function (req, res) {
-    yield nextLinkImageFile();
+    res.send(nextImgurLink());
 });
 app.post('/pollpost', function (req, res) {
     processImgData(res);

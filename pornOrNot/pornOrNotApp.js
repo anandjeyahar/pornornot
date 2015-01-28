@@ -13,15 +13,37 @@ var express = require('express'),
                                 {no_ready_check: true}),
     app = express();
 
+
+var tmpl = {
+    compile: function (source, options) {
+        if (typeof source == 'string') {
+            return function(options) {
+                options.locals = options.locals || {};
+                options.partials = options.partials || {};
+                if (options.body) // for express.js > v1.0
+                    locals.body = options.body;
+                return mustache.to_html(
+                    source, options.locals, options.partials);
+            };
+        } else {
+            return source;
+        }
+    },
+    render: function (template, options) {
+        template = this.compile(template, options);
+        return template(options);
+    }
+};
+
 var PORNDETECT_PREFIX = 'porn:or:not:',
     F_BOOBS_SET = 'porn:f:tits',
-    S_BOOBS_SET = 'porn:s:boobs', 
-    P_SET = 'porn:pussy', 
-    D_SET = 'porn:dick', 
-    A_SET = 'porn:butts', 
-    NP_SET = 'porn:not'; 
+    S_BOOBS_SET = 'porn:s:boobs',
+    P_SET = 'porn:pussy',
+    D_SET = 'porn:dick',
+    A_SET = 'porn:butts',
+    NP_SET = 'porn:not';
 
-app.set('view engine', 'mustache');
+app.set('view engine', 'jade');
 if (settings.redis.password) {
     client.auth(settings.redis.password, function(err, res) {
         if(!err) {
@@ -53,11 +75,16 @@ var processImgData = function(imgArgs) {
         }
 }
 
+var nextImgurLink = function () {
+}
+
 app.get('/', function (req, res) {
-    var html = mustache.render('static/pornornot.handlebars');
-    res.send(html);
+    res.render('pornornot', {});
 });
 
+app.get('/next', function (req, res) {
+    yield nextLinkImageFile();
+});
 app.post('/pollpost', function (req, res) {
     processImgData(res);
 });

@@ -54,6 +54,7 @@ if (settings.redis.password) {
 }
 
 var processImgData = function(imgArgs) {
+    console.log(imgArgs);
     var imgId = imgData['imgUrl'][0].split('/')[-1];
     switch (imgArgs['pornCategory']) {
         case 'pussy':

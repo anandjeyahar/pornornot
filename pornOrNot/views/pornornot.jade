@@ -16,13 +16,14 @@ html
             }
 
             function scaleSize(maxW, maxH, natW, natH){
-                  var ratio = currH / currW;
-                  if(currW >= maxW){
+                  var vRatio = natH / natW;
+                  if(natW >= maxW){
                         natW = maxW;
-                        natH = currW * ratio;
-                  } else if(currH >= maxH){
+                        natH = natW * vRatio;
+                  }
+                  if(natH >= maxH){
                         natH = maxH;
-                        natW = currH / ratio;
+                        natW = natH / vRatio;
                   }
                   return [natW, natH];
                 }

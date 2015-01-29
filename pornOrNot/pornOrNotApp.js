@@ -58,7 +58,7 @@ var processImgData = function(imgArgs) {
 }
 
 var imgurLinks = function () {
-    return fs.readFileSync('./imagelist.txt', 'utf8').split('\n').slice(0, -1);
+    return fs.readFileSync('../imagelist.txt', 'utf8').split('\n').slice(0, -1);
 }
 
 var nextImgurLink = function() {

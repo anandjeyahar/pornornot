@@ -1,0 +1,4 @@
+"dependencies": {
+    "express" : ">= 4.11.1",
+    "jade"    : ">= 1.9.1"
+}

@@ -6,7 +6,6 @@ var settings = {'redis': {'port':9383,
     };
 
 var express = require('express'),
-    mustache = require('mustache'),
     querystring = require('querystring'),
     redis = require('redis'),
     fs = require('fs'),
@@ -16,26 +15,6 @@ var express = require('express'),
     app = express();
 
 
-var tmpl = {
-    compile: function (source, options) {
-        if (typeof source == 'string') {
-            return function(options) {
-                options.locals = options.locals || {};
-                options.partials = options.partials || {};
-                if (options.body) // for express.js > v1.0
-                    locals.body = options.body;
-                return mustache.to_html(
-                    source, options.locals, options.partials);
-            };
-        } else {
-            return source;
-        }
-    },
-    render: function (template, options) {
-        template = this.compile(template, options);
-        return template(options);
-    }
-};
 
 var PORNDETECT_PREFIX = 'porn:or:not:',
     F_BOOBS_SET = 'porn:f:tits',
@@ -110,7 +89,7 @@ app.post('/pollpost', function (req, res) {
     });
 });
 
-var server = app.listen(8888, function () {
+var server = app.listen(9900, function () {
     var host = server.address().address;
     var port = server.address().port;
     console.log('server starting');

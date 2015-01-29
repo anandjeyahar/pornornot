@@ -7,6 +7,7 @@ var settings = {'redis': {'port':9383,
 
 var express = require('express'),
     mustache = require('mustache'),
+    querystring = require('querystring'),
     redis = require('redis'),
     fs = require('fs'),
     client = redis.createClient(settings.redis.port,
@@ -54,9 +55,9 @@ if (settings.redis.password) {
 }
 
 var processImgData = function(imgArgs) {
-    console.log(imgArgs);
-    var imgId = imgData['imgUrl'][0].split('/')[-1];
-    switch (imgArgs['pornCategory']) {
+    var urlParts = imgArgs.imgUrl.split('/');
+    var imgId = urlParts[urlParts.length - 1];
+    switch (imgArgs.pornCategory) {
         case 'pussy':
             client.sadd(P_SET, imgId);
             break;
@@ -72,7 +73,7 @@ var processImgData = function(imgArgs) {
         case 'frontalTits':
             client.sadd(F_BOOBS_SET, imgId);
             break;
-        case null:
+        case 'None':
             client.sadd(NP_SET, imgId);
         }
 }
@@ -93,8 +94,20 @@ app.get('/', function (req, res) {
 app.get('/next', function (req, res) {
     res.send(nextImgurLink());
 });
+
 app.post('/pollpost', function (req, res) {
-    processImgData(res);
+    var fullBody = '';
+    req.on('data', function(chunk) {
+        console.log("Received body data");
+        fullBody += chunk.toString();
+        });
+    req.on('end', function() {
+        // Empty 200 header for now.
+        res.writeHead(200, 'OK', {'Content-Type': 'text/html'});
+        urlDecodedBody = querystring.parse(fullBody);
+        processImgData(urlDecodedBody);
+        res.end();
+    });
 });
 
 var server = app.listen(8888, function () {

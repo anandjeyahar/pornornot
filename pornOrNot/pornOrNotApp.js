@@ -102,10 +102,9 @@ app.post('/pollpost', function (req, res) {
         fullBody += chunk.toString();
         });
     req.on('end', function() {
-        // Empty 200 header for now.
-        res.writeHead(200, 'OK', {'Content-Type': 'text/html'});
         urlDecodedBody = querystring.parse(fullBody);
         processImgData(urlDecodedBody);
+        res.redirect('/');
         res.end();
     });
 });

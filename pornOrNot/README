@@ -1,3 +1,6 @@
+To install Dependencies:
+    npm install express jade
+
 1. To run webserver:
        node --harmony serve.js
 

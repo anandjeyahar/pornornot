@@ -5,8 +5,8 @@ bower_components
 logs
 *.log
 # Cordova stuff
-platform/
-/*/platforms/
+platforms/
+*/platforms/
 
 # android stuff
 # Built application files

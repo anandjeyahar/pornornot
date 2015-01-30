@@ -16,7 +16,7 @@ def fetchImageLists():
     for subreddit in pornReddits:
         pornPics += client.subreddit_gallery(subreddit, sort='top', page=0, window='day')
 
-    allPics.extend(generalTrendingPics)
+    allPics.extend(generalTrendingPics[:20])
     allPics.extend(pornPics)
     # filter out only .jpg images
     allJpegs = [x for x in allPics  if x.link.split('.')[-1] in ['jpg', 'jpeg', 'png']]

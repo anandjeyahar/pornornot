@@ -31,7 +31,7 @@ function getScreenAspie(){
 
 function scaleSize(maxW, maxH, natW, natH){
       var vRatio = natH / natW;
-      if(natW >= maxW){
+      if((natW >= maxW) || (natH >= maxH)) {
             natW = maxW;
             natH = natW * vRatio;
       }
@@ -42,31 +42,21 @@ function scaleSize(maxW, maxH, natW, natH){
       return [natW, natH];
     }
 
-function getRequest(url, cb) {
-    console.log('url', url);
-    var req = new XMLHttpRequest();
-    req.open('GET', url, true);
-    req.onload = cb;
-    req.send();
-}
-
 var resizePic = function() {
+    var httpReq = new plugin.HttpRequest();
     var scrAspectRatio = getScreenAspie();
     var scrDims = screenSize();
+    console.log(scrDims);
     var maxH = 0.5 * scrDims[0];
     var maxW = 0.5 * scrDims[1];
-    var url = '/next';
-    var response;
-    console.log('resize pic function called');
-    getRequest(url, function(res) {
-        response = this.responseText;
-        var params = response;
+    var url = 'http://pornornot.net/next';
+    httpReq.get(url, function(status, res) {
+        var params = res;
         var divElem =  document.getElementById('appDiv');
-        console.log(url, divElem);
-        var html = '<form action ="/pollpost" method="post">';
+        var html = '<form action ="http://pornornot.net/pollpost" method="post">';
         html += '<img src=' + params  + ' class="Image" id="Image">';
-        html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
-
+        // html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
+        html += '</form>';
         divElem.innerHTML = html;
         var img = document.getElementById('Image');
         img.onload = function () {
@@ -97,10 +87,7 @@ var app = {
         app.receivedEvent('deviceready');
     },
     // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-
-        console.log('Received Event: ' + id);
+    receivedEvent: function() {
         resizePic();
     }
 };

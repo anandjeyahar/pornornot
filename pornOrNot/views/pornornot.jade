@@ -6,8 +6,8 @@ html
         script(type="text/javascript").
             function screenSize(){
                 // assumes whatever size the browser  is open when the function is called.
-                var h = window.screen.availHeight;
-                var w = window.screen.availWidth;
+                var h = window.innerHeight;
+                var w = window.innerWidth;
                 return [h, w];
             }
             function getScreenAspie(){

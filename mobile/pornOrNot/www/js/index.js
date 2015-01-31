@@ -16,10 +16,69 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+
+function screenSize(){
+    // assumes whatever size the browser  is open when the function is called.
+    var h = screen.height;
+    var w = screen.width;
+    return [h, w];
+}
+function getScreenAspie(){
+    var dim = screenSize();
+    return dim[0]/dim[1];
+}
+
+function scaleSize(maxW, maxH, natW, natH){
+      var vRatio = natH / natW;
+      if(natW >= maxW){
+            natW = maxW;
+            natH = natW * vRatio;
+      }
+      if(natH >= maxH){
+            natH = maxH;
+            natW = natH / vRatio;
+      }
+      return [natW, natH];
+    }
+
+function getRequest(url, cb) {
+    var req = new XMLHttpRequest();
+    req.open('GET', url, true);
+    req.onload = cb;
+    req.send();
+}
+
+var resizePic = function() {
+    var scrAspectRatio = getScreenAspie();
+    var scrDims = screenSize();
+    var maxH = 0.5 * scrDims[0];
+    var maxW = 0.5 * scrDims[1];
+    var url = '/next';
+    var response;
+    getRequest(url, function(res) {
+        response = this.responseText;
+        var params = response;
+        var divElem =  document.getElementById('appDiv');
+        var html = '<form action ="/pollpost" method="post">';
+        html += '<img src=' + params  + ' class="Image" id="Image">';
+        html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
+
+        divElem.innerHTML = html;
+        var img = document.getElementById('Image');
+        img.onload = function () {
+            newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
+            img.width = newDims[0];
+            img.height = newDims[1];
+            }
+    });
+}
+
 var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
+        resizePic();
     },
     // Bind Event Listeners
     //

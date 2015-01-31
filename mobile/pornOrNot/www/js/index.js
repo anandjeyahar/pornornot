@@ -43,6 +43,7 @@ function scaleSize(maxW, maxH, natW, natH){
     }
 
 function getRequest(url, cb) {
+    console.log('url', url);
     var req = new XMLHttpRequest();
     req.open('GET', url, true);
     req.onload = cb;
@@ -56,10 +57,12 @@ var resizePic = function() {
     var maxW = 0.5 * scrDims[1];
     var url = '/next';
     var response;
+    console.log('resize pic function called');
     getRequest(url, function(res) {
         response = this.responseText;
         var params = response;
         var divElem =  document.getElementById('appDiv');
+        console.log(url, divElem);
         var html = '<form action ="/pollpost" method="post">';
         html += '<img src=' + params  + ' class="Image" id="Image">';
         html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
@@ -78,7 +81,6 @@ var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
-        resizePic();
     },
     // Bind Event Listeners
     //
@@ -97,13 +99,9 @@ var app = {
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+        resizePic();
     }
 };
 

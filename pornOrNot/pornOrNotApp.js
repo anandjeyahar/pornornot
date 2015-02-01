@@ -83,7 +83,7 @@ app.post('/pollpost', function (req, res) {
     req.on('end', function() {
         urlDecodedBody = querystring.parse(fullBody);
         processImgData(urlDecodedBody);
-        res.redirect('/');
+        //res.redirect('/');
         res.end();
     });
 });

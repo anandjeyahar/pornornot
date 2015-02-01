@@ -61,7 +61,7 @@ function touchEndHandler(evnt) {
         console.log('left swipe detected');
         // left swipe ==> Not porn
         var args = {'porncategory': 'None',
-                    'imgUrl': this.childNodes[0].childNodes[0].src
+                    'imgUrl': this.childNodes[0].childNodes[0].src,
                     };
         var pollPostUrl = 'http://pornornot.net/pollpost';
         httpReq.post(pollPostUrl, args);
@@ -69,8 +69,9 @@ function touchEndHandler(evnt) {
     else if(touchStart >= touchEnd) {
         console.log('right swipe detected');
         this.childNodes[0].childNodes[0].opacity = 0.5;
+        var pollPostUrl = 'http://pornornot.net/pollpost';
         var html = '<form action ="' + pollPostUrl + '" method="post">';
-        html += '<input type=hidden readonly=true value=' + this.childNodes[0].childNodes[0] + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
+        html += '<input type=hidden readonly=true value=' + this.childNodes[0].childNodes[0] + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type="submit" value="Classify"></form>';
         this.innerHTML = html;
         //right swipe Ask what type of porn it is.
         }
@@ -84,7 +85,6 @@ var resizePic = function() {
     var maxH = scrDims[0];
     var maxW = scrDims[1];
     var nextUrl = 'http://pornornot.net/next';
-    var pollPostUrl = 'http://pornornot.net/pollpost';
     httpReq.get(nextUrl, function(status, res) {
         var params = res;
         var touchStart, touchEnd;

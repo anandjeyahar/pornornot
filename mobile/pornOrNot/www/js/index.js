@@ -30,11 +30,10 @@ function getScreenAspie(){
 
 function scaleSize(maxW, maxH, natW, natH){
       var vRatio = natH / natW;
-      if((natW >= maxW) || (natH >= maxH)) {
+      if(natW >= maxW) {
             natW = maxW;
             natH = natW * vRatio;
-      }
-      if(natH >= maxH){
+      } else if(natH >= maxH){
             natH = maxH;
             natW = natH / vRatio;
       }
@@ -42,30 +41,46 @@ function scaleSize(maxW, maxH, natW, natH){
     }
 
 function touchStartHandler(evnt) {
-    console.log('touch start', evnt.touches);
-    touchStart = [evnt.touches[0].clientX, evnt.touches[0].clientY];
+    console.log('touch start');
+    if (evnt.touches.length > 0){
+        touchStart = evnt.touches[0].pageX;
+        }
+    }
+
+function touchMoveHandler(evnt) {
+    evnt.preventDefault;
     }
 
 function touchEndHandler(evnt) {
-    console.log('touch end', evnt.touches);
-    touchEnd = [evnt.touches[0].clientX, evnt.touches[0].clientY];
-    if (touchStart[0] < touchEnd[0]) {
+    var httpReq = new plugin.HttpRequest();
+    console.log('touch end');
+    if (evnt.changedTouches.length > 0){
+        touchEnd = evnt.changedTouches[0].pageX;
+        }
+    if (touchStart < touchEnd) {
         console.log('left swipe detected');
         // left swipe ==> Not porn
         var args = {'porncategory': 'None',
-                    'imgUrl': res};
+                    'imgUrl': this.childNodes[0].childNodes[0].src
+                    };
+        var pollPostUrl = 'http://pornornot.net/pollpost';
         httpReq.post(pollPostUrl, args);
         }
-    else if(touchStart[0] >= touchEnd[0]) {
+    else if(touchStart >= touchEnd) {
+        console.log('right swipe detected');
+        this.childNodes[0].childNodes[0].opacity = 0.5;
+        var html = '<form action ="' + pollPostUrl + '" method="post">';
+        html += '<input type=hidden readonly=true value=' + this.childNodes[0].childNodes[0] + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
+        this.innerHTML = html;
         //right swipe Ask what type of porn it is.
         }
     }
 
 var resizePic = function() {
     var httpReq = new plugin.HttpRequest();
-    var scrAspectRatio = getScreenAspie();
     var scrDims = screenSize();
-    console.log('screen dimension', scrDims);
+    console.log('screen dimension');
+    console.log(scrDims);
     var maxH = scrDims[0];
     var maxW = scrDims[1];
     var nextUrl = 'http://pornornot.net/next';
@@ -76,14 +91,13 @@ var resizePic = function() {
         var divElem =  document.getElementById('appDiv');
         divElem.addEventListener('touchstart', touchStartHandler, false);
         divElem.addEventListener('touchend', touchEndHandler, false);
-        var html = '<form action ="' + pollPostUrl + '" method="post">';
-        html += '<img src=' + params  + ' class="Image" id="Image">';
-        // html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
-        html += '</form>';
+        //divElem.addEventListener('touchmove', touchMoveHandler, false);
+        var html = '<form> <img src=' + params  + ' class="Image" id="Image"> </form>';
         divElem.innerHTML = html;
         var img = document.getElementById('Image');
         img.onload = function () {
-            console.log('image size',img.naturalWidth, img.naturalHeight);
+            console.log('image size')
+            console.log(img.naturalWidth, img.naturalHeight);
             newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
             img.width = newDims[0];
             img.height = newDims[1];

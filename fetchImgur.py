@@ -20,10 +20,13 @@ def fetchImageLists():
     allPics.extend(generalTrendingPics[:20])
     allPics.extend(pornPics)
     # filter out only .jpg images
-    allJpegs = [x for x in allPics  if x.link.split('.')[-1] in ['jpg', 'jpeg', 'png']]
+
+    allValidImages = [x.link for x in allPics  if x.link.split('.')[-1] in ['jpg', 'jpeg', 'png', 'tif']]
+    with open('imagelist.txt', 'r') as inp_fd:
+        currentImages = [link.strip('\n') for link in inp_fd.readlines()]
     with open('imagelist.txt', 'ab') as out_fd:
-        for item in generalTrendingPics:
-           out_fd.write(item.link + '\n')
+        for item in set(allValidImages) - set(currentImages):
+           out_fd.write(item + '\n')
 
 
 if __name__ == '__main__':

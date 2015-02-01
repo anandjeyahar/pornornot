@@ -11,7 +11,8 @@ def fetchImageLists():
     pornPics = list()
     allPics = list()
     pornReddits = ['gonewild',
-                    'dykesgonewild']
+                    'dykesgonewild',
+                    'ladybonersgw']
     generalTrendingPics = client.gallery(section='hot', sort='viral', page=0, window='day')
     for subreddit in pornReddits:
         pornPics += client.subreddit_gallery(subreddit, sort='top', page=0, window='day')

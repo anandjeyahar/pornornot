@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 function screenSize(){
     // assumes whatever size the browser  is open when the function is called.
     var h = screen.height;

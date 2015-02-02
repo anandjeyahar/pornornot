@@ -3,6 +3,7 @@ html
     body
         <div id="appDiv">
         </div>
+
         script(type="text/javascript").
             function screenSize(){
                 // assumes whatever size the browser  is open when the function is called.
@@ -46,7 +47,7 @@ html
                     response = this.responseText;
                     var params = response;
                     var divElem =  document.getElementById('appDiv');
-                    var html = '<form action ="/pollpost" method="post">';
+                    var html = '<form action ="/pollpost" method="post" id="pollPost" onsubmit="ajaxPOST(this); return false;">';
                     html += '<img src=' + params  + ' class="Image" id="Image">';
                     html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory"value="None">None of the above <br> <input type="submit" value="Classify"></form>';
 
@@ -58,6 +59,20 @@ html
                         img.height = newDims[1];
                         }
                 });
-            };
 
-
+                var ajaxPOST = function (form) {
+                    var httpReq = new XMLHttpRequest();
+                    var params = "lorem=ipsum&name=binny";
+                    httpReq.open("POST", form.action, true)
+                    //Send the proper header information along with the request
+                    httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    httpReq.setRequestHeader("Content-length", params.length);
+                    httpReq.setRequestHeader("Connection", "close");
+                    httpReq.onreadystatechange = function () {
+                        if (httpReq.readyState == 4 && httpReq.status == 200) {
+                            alert(httpReq.responseText);
+                            }
+                    }
+                    httpReq.send(params);
+                };
+            }

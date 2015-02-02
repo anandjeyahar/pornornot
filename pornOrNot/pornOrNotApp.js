@@ -1,8 +1,5 @@
-var settings = {'redis': {'port':9383,
-                          'host':'dab.redistogo.com',
-                          'password': 'a213c4dc060e5584796848891a806b44',
-                          'username':  'redistogo'
-                    },
+var config = require('./config.js');
+var settings = {'redis': config.dev.redis
     };
 
 var express = require('express'),

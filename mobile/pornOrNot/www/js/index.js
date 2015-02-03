@@ -77,6 +77,23 @@ function touchEndHandler(evnt) {
         }
     }
 
+var ajaxPOST = function (form) {
+    var httpReq = new XMLHttpRequest();
+    var params = "lorem=ipsum&name=binny";
+    httpReq.open("POST", form.action, true)
+    //Send the proper header information along with the request
+    httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    httpReq.setRequestHeader("Content-length", params.length);
+    httpReq.setRequestHeader("Connection", "close");
+    httpReq.onreadystatechange = function () {
+        alert(httpReq);
+        if (httpReq.readyState == 4 && httpReq.status == 200) {
+            alert(httpReq.responseText);
+            }
+    }
+    httpReq.send(params);
+};
+
 var resizePic = function() {
     var httpReq = new plugin.HttpRequest();
     var scrDims = screenSize();
@@ -92,7 +109,7 @@ var resizePic = function() {
         divElem.addEventListener('touchstart', touchStartHandler, false);
         divElem.addEventListener('touchend', touchEndHandler, false);
         //divElem.addEventListener('touchmove', touchMoveHandler, false);
-        var html = '<form> <img src=' + params  + ' class="Image" id="Image"> </form>';
+        var html = '<form action="/pollpost"  method="post" id="pollPost" onsubmit="ajaxPOST(this); return false;"> <img src=' + params  + ' class="Image" id="Image"> </form>';
         divElem.innerHTML = html;
         var img = document.getElementById('Image');
         img.onload = function () {

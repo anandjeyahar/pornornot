@@ -85,7 +85,6 @@ app.post('/pollpost', function (req, res) {
     req.on('end', function() {
 
         urlDecodedBody = querystring.parse(fullBody);
-        console.log(urlDecodedBody);
         processImgData(urlDecodedBody);
         res.setHeader('status', 200);
         res.end();

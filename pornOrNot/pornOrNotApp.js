@@ -14,12 +14,12 @@ var express = require('express'),
 
 
 var PORNDETECT_PREFIX = 'porn:or:not:',
-    F_BOOBS_SET = 'porn:f:tits',
-    S_BOOBS_SET = 'porn:s:boobs',
-    P_SET = 'porn:pussy',
-    D_SET = 'porn:dick',
-    A_SET = 'porn:butts',
-    NP_SET = 'porn:not';
+    F_BOOBS_SSET = PORNDETECT_PREFIX + 'f:tits',
+    S_BOOBS_SSET = PORNDETECT_PREFIX + 's:boobs',
+    P_SSET = PORNDETECT_PREFIX + 'pussy',
+    D_SSET = PORNDETECT_PREFIX + 'dick',
+    A_SSET = PORNDETECT_PREFIX + 'butts',
+    NP_SSET = PORNDETECT_PREFIX + 'not';
 
 app.set('view engine', 'jade');
 if (settings.redis.password) {
@@ -35,33 +35,27 @@ var processImgData = function(imgArgs) {
     var imgId = urlParts[urlParts.length - 1];
     var errFunc = function (err, resp) {
             if (err) throw err;
-            console.log('added ' + resp + 'items');
+            console.log('added ' + resp + ' items');
         };
 
     switch (imgArgs.pornCategory) {
         case 'pussy':
-            client.sadd(P_SET, imgId, errFunc);
-            client.zadd(P_SET, imgId, 1, errFunc);
+            client.zincrby([P_SSET, 1.0, imgId] , errFunc);
             break;
         case 'ass':
-            client.sadd(A_SET, imgId, errFunc);
-            client.zadd(A_SET, imgId, 1, errFunc);
+            client.zincrby([A_SSET, 1.0, imgId], errFunc);
             break;
         case 'dick':
-            client.sadd(D_SET, imgId, errFunc);
-            client.zadd(D_SET, imgId, 1, errFunc);
+            client.zincrby([D_SSET, 1.0, imgId], errFunc);
             break;
         case 'sideTits':
-            client.sadd(S_BOOBS_SET, imgId, errFunc);
-            client.zadd(S_BOOBS_SET, imgId, 1, errFunc);
+            client.zincrby([S_BOOBS_SSET, 1.0, imgId], errFunc);
             break;
         case 'frontalTits':
-            client.sadd(F_BOOBS_SET, imgId, errFunc);
-            client.zadd(F_BOOBS_SET, imgId, 1, errFunc);
+            client.zincrby([F_BOOBS_SSET, 1.0, imgId], errFunc);
             break;
         case 'None':
-            client.sadd(NP_SET, imgId, errFunc);
-            client.zadd(NP_SET, imgId, 1, errFunc);
+            client.zincrby([NP_SSET, 1.0, imgId], errFunc);
         }
 }
 
@@ -89,9 +83,11 @@ app.post('/pollpost', function (req, res) {
         fullBody += chunk.toString();
         });
     req.on('end', function() {
+
         urlDecodedBody = querystring.parse(fullBody);
+        console.log(urlDecodedBody);
         processImgData(urlDecodedBody);
-        //res.redirect('/');
+        res.setHeader('status', 200);
         res.end();
     });
 });

@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.cordova.pornornot" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.pornornot" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>PornOrNot</name>
     <description>
         Simple Porn Or Not application.
     </description>
-    <author email="dev@cordova.apache.org" href="http://www.pornornot.net">
-        Apache Cordova Team
+    <author email="dev@pornornot.net" href="http://www.pornornot.net">
+        Anand Jeyahar
     </author>
     <content src="index.html" />
     <access origin="*" />

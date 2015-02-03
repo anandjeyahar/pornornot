@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 function screenSize(){
     // assumes whatever size the browser  is open when the function is called.
     var h = screen.height;
@@ -40,6 +21,13 @@ function scaleSize(maxW, maxH, natW, natH){
       return [natW, natH];
     }
 
+var ajaxPOST = function (url, args) {
+    var httpReq = new XMLHttpRequest();
+    httpReq.open("POST", url, true)
+    //Send the proper header information along with the request
+    httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    httpReq.send(args);
+};
 function touchStartHandler(evnt) {
     console.log('touch start');
     if (evnt.touches.length > 0){
@@ -52,49 +40,47 @@ function touchMoveHandler(evnt) {
     }
 
 function touchEndHandler(evnt) {
-    var httpReq = new plugin.HttpRequest();
-    console.log('touch end');
     if (evnt.changedTouches.length > 0){
         touchEnd = evnt.changedTouches[0].pageX;
         }
-    if (touchStart < touchEnd) {
-        console.log('left swipe detected');
-        // left swipe ==> Not porn
-        var args = {'porncategory': 'None',
-                    'imgUrl': this.childNodes[0].childNodes[0].src,
-                    };
-        var pollPostUrl = 'http://pornornot.net/pollpost';
-        httpReq.post(pollPostUrl, args);
-        }
-    else if(touchStart >= touchEnd) {
-        console.log('right swipe detected');
-        this.childNodes[0].childNodes[0].opacity = 0.5;
-        var pollPostUrl = 'http://pornornot.net/pollpost';
-        var html = '<form action ="' + pollPostUrl + '" method="post">';
-        html += '<input type=hidden readonly=true value=' + this.childNodes[0].childNodes[0] + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type="submit" value="Classify"></form>';
-        this.innerHTML = html;
-        //right swipe Ask what type of porn it is.
-        }
+    img = document.getElementById('Image');
+    if (touchStart >= touchEnd) {
+        leftSwipeHandler();
+        renderPic();
+    }
+    else if(touchStart < touchEnd) {
+        rightSwipeHandler(appDiv, renderPic);
+    }
+}
+
+function leftSwipeHandler() {
+    console.log('left swipe detected');
+    // left swipe ==> Not porn
+    var args = {'porncategory': 'None',
+                'imgUrl': img.src,
+                };
+    var pollPostUrl = 'http://pornornot.net/pollpost';
+    ajaxPOST(pollPostUrl, args);
     }
 
-var ajaxPOST = function (form) {
-    var httpReq = new XMLHttpRequest();
-    var params = "lorem=ipsum&name=binny";
-    httpReq.open("POST", form.action, true)
-    //Send the proper header information along with the request
-    httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    httpReq.setRequestHeader("Content-length", params.length);
-    httpReq.setRequestHeader("Connection", "close");
-    httpReq.onreadystatechange = function () {
-        alert(httpReq);
-        if (httpReq.readyState == 4 && httpReq.status == 200) {
-            alert(httpReq.responseText);
-            }
+function rightSwipeHandler(callback) {
+    //right swipe Ask what type of porn it is.
+    console.log('right swipe detected');
+    img.opacity = 0.5;
+    var pollPostUrl = 'http://pornornot.net/pollpost';
+    var html = '<form id="pollPost"' + '" method="post">';
+    html += '<input type=hidden readonly=true value=' + img.src + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type="submit" value="Classify"></form>';
+    var appDivElem =  document.getElementById('appDiv');
+    appDivElem.removeEventListener('touchstart', touchStartHandler, false);
+    appDivElem.removeEventListener('touchend', touchEndHandler, false);
+    appDivElem.removeEventListener('touchmove', touchMoveHandler, false);
+    appDivElem.innerHTML = html;
+    console.log(callback);
+    callback();
     }
-    httpReq.send(params);
-};
 
-var resizePic = function() {
+
+function renderPic() {
     var httpReq = new plugin.HttpRequest();
     var scrDims = screenSize();
     console.log('screen dimension');
@@ -105,12 +91,12 @@ var resizePic = function() {
     httpReq.get(nextUrl, function(status, res) {
         var params = res;
         var touchStart, touchEnd;
-        var divElem =  document.getElementById('appDiv');
-        divElem.addEventListener('touchstart', touchStartHandler, false);
-        divElem.addEventListener('touchend', touchEndHandler, false);
-        //divElem.addEventListener('touchmove', touchMoveHandler, false);
-        var html = '<form action="/pollpost"  method="post" id="pollPost" onsubmit="ajaxPOST(this); return false;"> <img src=' + params  + ' class="Image" id="Image"> </form>';
-        divElem.innerHTML = html;
+        var appDivElem =  document.getElementById('appDiv');
+        appDivElem.addEventListener('touchstart', touchStartHandler, false);
+        appDivElem.addEventListener('touchend', touchEndHandler, false);
+        appDivElem.addEventListener('touchmove', touchMoveHandler, false);
+        var html = '<img src=' + params  + ' class="Image" id="Image">';
+        appDivElem.innerHTML = html;
         var img = document.getElementById('Image');
         img.onload = function () {
             console.log('image size')
@@ -143,7 +129,7 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function() {
-        resizePic();
+        renderPic();
     }
 };
 

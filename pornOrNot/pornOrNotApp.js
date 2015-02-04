@@ -6,13 +6,13 @@ var express = require('express'),
     querystring = require('querystring'),
     redis = require('redis'),
     fs = require('fs'),
+    path = require('path'),
     client = redis.createClient(settings.redis.port,
                                 settings.redis.host,
                                 {no_ready_check: true}),
     app = express();
 
-
-
+// Redis keys
 var PORNDETECT_PREFIX = 'porn:or:not:',
     F_BOOBS_SSET = PORNDETECT_PREFIX + 'f:tits',
     S_BOOBS_SSET = PORNDETECT_PREFIX + 's:boobs',

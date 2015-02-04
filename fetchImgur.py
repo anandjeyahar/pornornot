@@ -12,12 +12,16 @@ def fetchImageLists():
     allPics = list()
     pornReddits = ['gonewild',
                     'dykesgonewild',
-                    'ladybonersgw']
+                    'ladybonersgw',
+                    'gonemild',
+                    'dykesgonemild',
+                    'ladyboners'
+                    ]
     generalTrendingPics = client.gallery(section='hot', sort='viral', page=0, window='day')
     for subreddit in pornReddits:
         pornPics += client.subreddit_gallery(subreddit, sort='top', page=0, window='day')
 
-    allPics.extend(generalTrendingPics[:20])
+    allPics.extend(generalTrendingPics)
     allPics.extend(pornPics)
     # filter out only .jpg images
 

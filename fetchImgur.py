@@ -15,7 +15,9 @@ def fetchImageLists():
                     'ladybonersgw',
                     'gonemild',
                     'dykesgonemild',
-                    'ladyboners'
+                    'ladyboners',
+                    # Non -porn reddits
+                    'EarthPorn',
                     ]
     generalTrendingPics = client.gallery(section='hot', sort='viral', page=0, window='day')
     for subreddit in pornReddits:

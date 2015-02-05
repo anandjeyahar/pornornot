@@ -72,6 +72,41 @@ app.get('/', function (req, res) {
     res.render('pornornot', {});
 });
 
+app.get('/app/download', function (req, res) {
+    var mimeTypes = {
+        'html': 'text/html',
+        'jpeg': 'image/jpeg',
+        'jpg': 'image/jpeg',
+        'png': 'image/png',
+        'js': 'text/javascript',
+        'css': 'text/css',
+        'apk': 'application/vnd.android.package-archive',
+        };
+    filename = 'androidRelease.apk';
+    appFileName = './appsFiles/' + filename;
+    fs.exists(appFileName, function(exists) {
+        if (!exists) {
+            console.log('not exists' + appFileName);
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.write('404 file not found\n');
+            res.end();
+            return;
+        }
+        var mimeType = mimeTypes[path.extname(appFileName).split('.')[1]];
+        res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
+        res.writeHead(200, {'Content-Type': mimeType});
+
+        var fileStream = fs.createReadStream(appFileName);
+        fileStream.on('data', function(data) {
+            res.write(data);
+        });
+
+        fileStream.on('end', function(data) {
+            res.end();
+        });
+    });
+});
+
 app.get('/next', function (req, res) {
     res.send(nextImgurLink());
 });
@@ -79,7 +114,7 @@ app.get('/next', function (req, res) {
 app.post('/pollpost', function (req, res) {
     var fullBody = '';
     req.on('data', function(chunk) {
-        console.log("Received body data");
+        console.log('Received body data');
         fullBody += chunk.toString();
         });
     req.on('end', function() {

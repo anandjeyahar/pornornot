@@ -11,6 +11,7 @@ var express = require('express'),
                                 settings.redis.host,
                                 {no_ready_check: true}),
     app = express();
+    app.use(express.static(__dirname + '/static'));
 
 // Redis keys
 var PORNDETECT_PREFIX = 'porn:or:not:',
@@ -82,6 +83,7 @@ app.get('/app/download', function (req, res) {
         'css': 'text/css',
         'apk': 'application/vnd.android.package-archive',
         };
+
     filename = 'androidRelease.apk';
     appFileName = './appsFiles/' + filename;
     fs.exists(appFileName, function(exists) {

@@ -1,10 +1,4 @@
-# pornOrNot
-To install Dependencies:
-    npm install express jade
+porndetect
+==========
 
-1. To run webserver:
-       node --harmony serve.js
-
-2. To add the cron job
-    (to fetch and populate imgur links):
-       -- add the line in crontab to your crontab file
+Detect pornography a haarcascade classifier trained with pre-set images and an REST API

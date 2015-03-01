@@ -5,6 +5,10 @@ html
         </div>
 
         script(type="text/javascript").
+            function is_touch_device() {
+              return 'ontouchstart' in window // works on most browsers
+                    || 'onmsgesturechange' in window; // works on ie10
+                    };
             function screenSize(){
                 // assumes whatever size the browser  is open when the function is called.
                 var h = window.innerHeight;
@@ -44,60 +48,64 @@ html
             ga('send', 'pageview');
 
             window.onload = function() {
-                var scrAspectRatio = getScreenAspie();
-                var scrDims = screenSize();
-                var maxH = 0.5 * scrDims[0];
-                var maxW = 0.5 * scrDims[1];
-                var url = '/next';
-                var response;
-                getRequest(url, function(res) {
-                    response = this.responseText;
-                    var params = response;
-                    var divElem =  document.getElementById('appDiv');
-                    var html = '<form action ="/pollpost" method="post" id="pollPost">';
-                    html += '<a href="/app/download"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/ribbon.png" alt="Download Android App"></a>';
-                    html += '<img src=' + params  + ' class="Image" id="Image">';
-                    html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory" value="None" required>None of the above <br> <input type="submit" value="Classify"></form>';
+                if !is_touch_device(){
+                    var scrAspectRatio = getScreenAspie();
+                    var scrDims = screenSize();
+                    var maxH = 0.5 * scrDims[0];
+                    var maxW = 0.5 * scrDims[1];
+                    var url = '/next';
+                    var response;
+                    getRequest(url, function(res) {
+                        response = this.responseText;
+                        var params = response;
+                        var divElem =  document.getElementById('appDiv');
+                        var html = '<form action ="/pollpost" method="post" id="pollPost">';
+                        html += '<a href="/app/download"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/ribbon.png" alt="Download Android App"></a>';
+                        html += '<img src=' + params  + ' class="Image" id="Image">';
+                        html += '<input type=hidden readonly=true value=' + params + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type=radio name="pornCategory" value="None" required>None of the above <br> <input type="submit" value="Classify"></form>';
 
-                    divElem.innerHTML = html;
-                    var img = document.getElementById('Image');
-                    img.onload = function () {
-                        newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
-                        img.width = newDims[0];
-                        img.height = newDims[1];
+                        divElem.innerHTML = html;
+                        var img = document.getElementById('Image');
+                        img.onload = function () {
+                            newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
+                            img.width = newDims[0];
+                            img.height = newDims[1];
+                            }
+                    form = document.getElementById('pollPost');
+                    form.onsubmit = function(e) {
+                                e.preventDefault();
+                                window.location= '/';
+                                var args = { 'imgUrl': form.imgUrl,
+                                             'pornCategory': form.pornCategory
+                                             };
+                                ajaxPOST(form, args);
+
+                                };
+                    });
+
+                    var urlEncodeParams = function(obj){
+                        var paramString = '';
+                        for (var key in data) {
+                            var value = obj[key];
+                            if(obj[key] instanceof Array || obj[key] instanceof Object){
+                                value = encodeURIComponent(JSON.stringify(value));
+                            }
+                            if (paramString != "") paramString += "&";
+                            paramString += key + "=" + encodeURIComponent(value);
                         }
-                form = document.getElementById('pollPost');
-                form.onsubmit = function(e) {
-                            e.preventDefault();
-                            window.location= '/';
-                            var args = { 'imgUrl': form.imgUrl,
-                                         'pornCategory': form.pornCategory
-                                         };
-                            ajaxPOST(form, args);
-
-                            };
-                });
-
-                var urlEncodeParams = function(obj){
-                    var paramString = '';
-                    for (var key in data) {
-                        var value = obj[key];
-                        if(obj[key] instanceof Array || obj[key] instanceof Object){
-                            value = encodeURIComponent(JSON.stringify(value));
-                        }
-                        if (paramString != "") paramString += "&";
-                        paramString += key + "=" + encodeURIComponent(value);
+                        return paramString;
                     }
-                    return paramString;
-                }
 
-                var ajaxPOST = function (form, args) {
-                    var httpReq = new XMLHttpRequest();
-                    httpReq.open("POST", form.action, true)
-                    //Send the proper header information along with the request
-                    httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    httpReq.setRequestHeader("Content-length", args.length);
-                    httpReq.setRequestHeader("Connection", "close");
-                    httpReq.send(urlEncodeParams(args));
+                    var ajaxPOST = function (form, args) {
+                        var httpReq = new XMLHttpRequest();
+                        httpReq.open("POST", form.action, true)
+                        //Send the proper header information along with the request
+                        httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        httpReq.setRequestHeader("Content-length", args.length);
+                        httpReq.setRequestHeader("Connection", "close");
+                        httpReq.send(urlEncodeParams(args));
+                    };
+                } else {
+                    // Copy the modified code from mobile app for touch devices here.
                 };
             }

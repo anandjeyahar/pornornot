@@ -7,7 +7,7 @@ html
         script(type="text/javascript").
             function is_touch_device() {
               return 'ontouchstart' in window // works on most browsers
-                    || 'onmsgesturechange' in window; // works on ie10
+                    || 'onmsgesturechange' in window;
                     };
             function screenSize(){
                 // assumes whatever size the browser  is open when the function is called.
@@ -39,6 +39,14 @@ html
                 req.onload = cb;
                 req.send();
             }
+
+        var ajaxPOST = function (url, args) {
+            var httpReq = new XMLHttpRequest();
+            httpReq.open("POST", url, true)
+            //Send the proper header information along with the request
+            httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            httpReq.send(args);
+        };
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -47,8 +55,87 @@ html
             ga('create', 'UA-59273785-1', 'auto');
             ga('send', 'pageview');
 
+        function touchStartHandler(evnt) {
+            console.log('touch start');
+            if (evnt.touches.length > 0){
+                touchStart = evnt.touches[0].pageX;
+                }
+            }
+
+        function touchMoveHandler(evnt) {
+            evnt.preventDefault;
+            }
+
+        function touchEndHandler(evnt) {
+            if (evnt.changedTouches.length > 0){
+                touchEnd = evnt.changedTouches[0].pageX;
+                }
+            img = document.getElementById('Image');
+            if (touchStart >= touchEnd) {
+                leftSwipeHandler();
+                renderPic();
+            }
+            else if(touchStart < touchEnd) {
+                rightSwipeHandler(appDiv, renderPic);
+            }
+        }
+        function leftSwipeHandler() {
+            console.log('left swipe detected');
+            // left swipe ==> Not porn
+            var args = {'porncategory': 'None',
+                        'imgUrl': img.src,
+                        };
+            var pollPostUrl = 'http://pornornot.net/pollpost';
+            ajaxPOST(pollPostUrl, args);
+            }
+
+        function rightSwipeHandler(callback) {
+            //right swipe Ask what type of porn it is.
+            console.log('right swipe detected');
+            img.opacity = 0.5;
+            var pollPostUrl = 'http://pornornot.net/pollpost';
+            var html = '<form id="pollPost"' + '" method="post">';
+            html += '<input type=hidden readonly=true value=' + img.src + ' name="imgUrl"> <br><input type=radio name="pornCategory" value="frontalTits" >Frontal Boob <br><input type=radio name="pornCategory"value="sideTits">Side Boob <br>    <input type=radio name="pornCategory"value="pussy">Pussy <br>    <input type=radio name="pornCategory"value="dick">Dick <br><input type=radio name="pornCategory"value="ass">Butts <br><input type="submit" value="Classify"></form>';
+            var appDivElem =  document.getElementById('appDiv');
+            appDivElem.removeEventListener('touchstart', touchStartHandler, false);
+            appDivElem.removeEventListener('touchend', touchEndHandler, false);
+            appDivElem.removeEventListener('touchmove', touchMoveHandler, false);
+            appDivElem.innerHTML = html;
+            console.log(callback);
+            callback();
+            }
+
+
+    function renderPic() {
+        var httpReq = new plugin.HttpRequest();
+        var scrDims = screenSize();
+        console.log('screen dimension');
+        console.log(scrDims);
+        var maxH = scrDims[0];
+        var maxW = scrDims[1];
+        var nextUrl = 'http://pornornot.net/next';
+        httpReq.get(nextUrl, function(status, res) {
+            var params = res;
+            var touchStart, touchEnd;
+            var appDivElem =  document.getElementById('appDiv');
+            appDivElem.addEventListener('touchstart', touchStartHandler, false);
+            appDivElem.addEventListener('touchend', touchEndHandler, false);
+            appDivElem.addEventListener('touchmove', touchMoveHandler, false);
+            var html = '<img src=' + params  + ' class="Image" id="Image">';
+            appDivElem.innerHTML = html;
+            var img = document.getElementById('Image');
+            img.onload = function () {
+                console.log('image size')
+                console.log(img.naturalWidth, img.naturalHeight);
+                newDims = scaleSize(maxW, maxH, img.naturalWidth, img.naturalHeight);
+                img.width = newDims[0];
+                img.height = newDims[1];
+                }
+        });
+    }
+
             window.onload = function() {
-                if !is_touch_device(){
+                if is_touch_device()== false{
                     var scrAspectRatio = getScreenAspie();
                     var scrDims = screenSize();
                     var maxH = 0.5 * scrDims[0];
@@ -106,6 +193,14 @@ html
                         httpReq.send(urlEncodeParams(args));
                     };
                 } else {
+                    onDeviceReady: function() {
+                        app.receivedEvent('deviceready');
+                    },
+                    // Update DOM on a Received Event
+                    receivedEvent: function() {
+                        renderPic();
+                    }
+                        document.addEventListener('deviceready', this.onDeviceReady, false);
                     // Copy the modified code from mobile app for touch devices here.
                 };
             }

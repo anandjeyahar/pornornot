@@ -1,6 +1,6 @@
 ##
 # Code to transform a given image into local features and return the transformed image
-
+import Image
 import pyhog
 import pyvision as pv
 import pyvision.face.CascadeDetector as cd
@@ -20,8 +20,10 @@ def facedetect():
     im.show(delay=0)
 
 def main():
-    im = pv.Image("testImage.jpg")
-    pyhog.
+    import pdb;pdb.set_trace()
+    im =Image.open("testImage.jpg")
+    hogbin = pyhog.features_pedro(im, 20)
+    pyhog.hog_picture(hogbin)
 if __name__ == '__main__':
     main()
 

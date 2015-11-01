@@ -2,3 +2,4 @@ pillow
 tornado
 redis
 numpy
+imgurpython

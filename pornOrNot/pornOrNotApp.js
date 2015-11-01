@@ -3,8 +3,8 @@ var settings = {'redis': config.dev.redis
     };
 
 var express = require('express'),
-    synaptic= require('synaptic'),
-    hopfield= synaptic.Architect.Hopfield(10),
+    //synaptic= require('synaptic'),
+    //hopfield= synaptic.Architect.Hopfield(10),
     querystring = require('querystring'),
     redis = require('redis'),
     fs = require('fs'),

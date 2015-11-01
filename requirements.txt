@@ -1,0 +1,4 @@
+pillow
+tornado
+redis
+numpy

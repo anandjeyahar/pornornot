@@ -1,6 +1,6 @@
 from imgurpython import ImgurClient
 import random
-
+import logging
 
 client_id = '39f4394b33b9d9a'
 client_secret = '298b3b7541a230238eedc1b04164882e163a4516'
@@ -28,7 +28,7 @@ def fetchImageLists():
     # filter out only .jpg images
 
     allValidImages = [x.link for x in allPics  if x.link.split('.')[-1] in ['jpg', 'jpeg', 'png', 'tif']]
-    with open('imagelist.txt', 'r') as inp_fd:
+    with logging.RotatingFileHandler('links/imagelist.txt', 'r') as inp_fd:
         currentImages = [link.strip('\n') for link in inp_fd.readlines()]
     with open('imagelist.txt', 'ab') as out_fd:
         for item in set(allValidImages) - set(currentImages):
